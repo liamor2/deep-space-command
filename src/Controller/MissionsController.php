@@ -2,12 +2,30 @@
 
 namespace App\Controller;
 
-use App\Entity\Missions;
+use App\Repository\MissionsRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-class MissionsController extends AbstractAppController
+class MissionController extends AbstractController
 {
-    protected function getEntityClass(): string
+    private $missionsRepository;
+
+    public function __construct(MissionsRepository $missionsRepository)
     {
-        return Missions::class;
+        $this->missionsRepository = $missionsRepository;
+    }
+
+    /**
+     * @Route("/missions", name="missions_list")
+     */
+    public function list(): Response
+    {
+        // Retrieve all missions
+        $missions = $this->missionsRepository->findAll();
+
+        return $this->render('missions/list.html.twig', [
+            'missions' => $missions,
+        ]);
     }
 }
